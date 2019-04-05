@@ -1,0 +1,132 @@
+install.packages("ggplot2")
+
+###########1번############
+
+kardashians<-c("Kris Jenner","Caityln Jenner","Kourtney Kardashian","Kim Kardashian", "Khloe Kardashian","Kendall Jenner", "Kylie Jenner")
+names<-kardashians
+age<-c(63,69,39,37,35,22,20)
+insta<-c(25.8,9.2,75.3,132.6,90.1,107.2,130.3)
+kids<-c(4,2,3,3,1,0,1)
+kuwtk<-data.frame(names=names, age=age, instafollowers=insta, numberofkids= kids)
+View(kuwtk)
+
+###########2번############
+
+titanic <- read.csv("C:/Users/kim jeeyeon/Desktop/stat/statistics-r-master/statistics-r-master/data/titanic.csv", header = TRUE, row.names = 1)
+titanicmale<-titanic[titanic$Sex=="male",c("Age", "Sex","Survived")]
+View(titanicmale)  
+tmm<-mean(titanicmale$Survived) #남성 생존율
+titanicfemale<-titanic[titanic$Sex=="female", c("Pclass","Sex","Survived")]
+tfm<-mean(titanicfemale$Survived) #여성 생존율 
+
+#새로운 dataframe 형성
+survival<-c("male","female")
+rate<-c(tmm,tfm)
+tmsr<-data.frame(Sex=survival,Survivalrate=rate)
+View(tmsr)
+
+#시각화
+library(ggplot2)
+ggplot(tmsr,aes(Sex,Survivalrate))+geom_bar(stat="identity")+geom_text(aes(label=Survivalrate))
+
+########3번##########
+
+#N/A 제거하는 과정(잘 이해 안됨)
+is.na(titanicmale$Age)
+sum(is.na(titanicmale$Age))
+
+as.integer(mean(titanicmale$Age, na.rm = TRUE))
+
+titanicmale$Age[is.na(titanicmale$Age)] <- as.integer(mean(titanicmale$Age, na.rm = TRUE))
+titanicmale$Age[is.na(titanicmale$Age)]
+###########################
+
+titanicmalethirty<- titanicmale[titanicmale$Age>=30,c("Age","Sex","Survived")] 
+titanicmalenotthirty<-titanicmale[titanicmale$Age<30,c("Age","Sex","Survived")]
+
+survivalbyage<-c("30 and above", "less than 30")
+survivalratebyage<-c(mean(titanicmalethirty$Survived),mean(titanicmalenotthirty$Survived))
+tmtsr<-data.frame(Age=survivalbyage,Survivalrate=survivalratebyage)
+View(tmtsr)
+
+#시각화
+library(ggplot2)
+ggplot(tmtsr,aes(Age,Survivalrate))+geom_bar(stat="identity")+geom_text(aes(label=Survivalrate))
+
+
+#########4번###########
+
+titanicfemalepclassone<-titanicfemale[titanicfemale$Pclass==1,c("Pclass","Sex","Survived")]
+titanicfemalepclasstwo<-titanicfemale[titanicfemale$Pclass==2,c("Pclass","Sex","Survived")]
+survivalpclass<-c("1st class","2nd class")
+survivalpclassrate<-c(mean(titanicfemalepclassone$Survived),mean(titanicfemalepclasstwo$Survived))
+femalepclass<-data.frame(Pclass=survivalpclass, Survivalrate=survivalpclassrate)
+View(femalepclass)
+
+library(ggplot2)
+ggplot(femalepclass,aes(Pclass,Survivalrate))+geom_bar(stat="identity")
+
+
+#########5번###########
+max(titanic$Age)
+titaniczero<-titanic[titanic$Age<=10,c("Age","Survived")]
+View(titaniczero)
+titanicten<-titanic[titanic$Age<=20 ,c("Age","Survived")]
+View(titanicten)
+
+
+
+#########6번###########
+
+#각 조건(성별,나이,좌석,탑승항구)에 따라 생존율 비교 
+#생존율 차이에 따라 일정한 자연수 부여(생존율이 높은 조건에 큰 수 부여)
+#조건마다 얻은 수치를 모두 합하면 개인 당 하나의 숫자 부여 가능. 
+#이 때 생존한 사람 중 최소 수치를 찾음.(그 수보다 크면 생존하였음을 알 수 있음)
+#새로운 사람이 등장했을 때 각 조건에 따라 숫자를 부여
+#기존에 구한 최소 수치 보다 크면 생존할 가능성이 높다고 볼 수 있고, 
+#수치가 작으면 생존하지 못했을 가능성이 크다고 볼 수 있음. 
+
+#########7번###########
+
+studytime<-read.csv("C:/Users/kim jeeyeon/Desktop/stat/statistics-r-master/statistics-r-master/data/study_time.csv", header = TRUE)
+View(studytime)
+mean(studytime$done_second)/3600
+sd(studytime$done_second)/3600
+
+#########8번###########
+
+hist(studytime$done_second)
+boxplot(studytime$done_second)
+
+#########9번###########
+ggplot(studytime,aes(,done_second))+geom_boxplot()
+
+#########10번###########
+rtruncnorm #????
+
+#########11번###########
+produce101<-read.csv("C:/Users/kim jeeyeon/Desktop/stat/statistics-r-master/statistics-r-master/data/produce101.csv")
+View(produce101)
+library(ggplot2)
+ggplot(produce101,aes(score))+geom_histogram(binwidth=10,fill="white",colour="black")
+
+ksat<-read.csv("C:/Users/kim jeeyeon/Desktop/stat/statistics-r-master/statistics-r-master/data/korean_sat.csv")
+View(ksat)
+library(ggplot2)
+ggplot(ksat,aes(score))+geom_density(kernel="gaussian")
+
+txtmssg<-read.csv("C:/Users/kim jeeyeon/Desktop/stat/statistics-r-master/statistics-r-master/data/Textmessages.csv")
+View(txtmssg)
+summary(txtmssg$Group)
+txtcontrols<-txtmssg[txtmssg$Group=="Controls",c("Group","Baseline","Six_months")]
+View(txtcontrols)
+library(ggplot2)
+ggplot(txtcontrols,aes(Baseline))
+
+#########12번###########
+
+usedu<-read.csv("C:/Users/kim jeeyeon/Desktop/stat/statistics-r-master/statistics-r-master/data/us-education-datasets-unification-project/states_all_extended.csv",header=TRUE)
+View(usedu)
+
+tuition<-read.csv("C:/Users/kim jeeyeon/Desktop/stat/statistics-r-master/statistics-r-master/data/meantuition.csv")
+View(tuition)
